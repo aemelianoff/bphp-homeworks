@@ -3,33 +3,33 @@
     $dayOfTheWeek = date("N");
 
     if ($time >= 6 and $time <= 10) {
-        $image = "img/morning.jpg";
-        $text = "Доброе утро!";
+        $image = 'img/morning.jpg';
+        $greeting = 'Доброе утро!';
     } elseif ($time >= 11 and $time <= 17) {
-        $image = "img/day.jpg";
-        $text = "Добрый день!";
+        $image = 'img/day.jpg';
+        $greeting = 'Добрый день!';
     } elseif ($time >= 18 and $time <= 22) {
-        $image = "img/evening.jpg";
-        $text = "Добрый вечер!";
+        $image = 'img/evening.jpg';
+        $greeting = 'Добрый вечер!';
     } elseif (($time >= 0 and $time <= 5) and ($time = 23)) {
-        $image = "img/night.jpg";
-        $text = "Доброй ночи!";
+        $image = 'img/night.jpg';
+        $greeting = 'Доброй ночи!';
     }
 
     if ($dayOfTheWeek == 1) {
-        $text_2 = "Сегодня - понедельник";
+        $day = 'Сегодня - понедельник';
     } elseif ($dayOfTheWeek == 2) {
-        $text_2 = "Сегодня - вторник";
+        $day = 'Сегодня - вторник';
     } elseif ($dayOfTheWeek == 3) {
-        $text_2 = "Сегодня - среда";
+        $day = 'Сегодня - среда';
     } elseif ($dayOfTheWeek == 4) {
-        $text_2 = "Сегодня - четверг";
+        $day = 'Сегодня - четверг';
     } elseif ($dayOfTheWeek == 5) {
-        $text_2 = "Сегодня - пятница";
+        $day = 'Сегодня - пятница';
     } elseif ($dayOfTheWeek == 6) {
-        $text_2 = "Сегодня - суббота";
+        $day = 'Сегодня - суббота';
     } elseif ($dayOfTheWeek == 7) {
-        $text_2 = "Сегодня - воскресенье";
+        $day = 'Сегодня - воскресенье';
     }
 ?>
 
@@ -43,7 +43,7 @@
 <body>
     <div class="img" style="background-image: url(<?= $image; ?>)">
         <div class="greeting">
-            <h1><?php echo $text."\n".$text_2; ?></h1>
+            <h1><?php echo "$greeting $day"; ?></h1>
         </div>
     </div>
 </body>

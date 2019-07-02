@@ -1,28 +1,30 @@
 <?php
-$variable = null;
+$variable = true;
 
 if (is_bool($variable)) {
-    $type = bool;
-    $variable = "false";
-    $description = "Логический тип данных.
-                    Используеться для проверки на true или false";
+    $type = 'bool';
+    if ($variable == false) {
+        $variable = 'false';
+    } elseif ($variable == true) {
+        $variable = 'true';
+    }
+    $description = 'Логический тип данных.<br>Используеться для проверки на true или false';
 } elseif (is_float($variable)) {
-    $type = float;
-    $description = "Число с плавающей точкой.
-                    Используеться для вещественных числе";
+    $type = 'float';
+    $description = 'Число с плавающей точкой.<br>Используеться для вещественных числе';
 } elseif (is_int($variable)) {
-    $type = int;
-    $description = "Целое число.
-                    Один из простейших и самых распространённых типов данных";
+    $type = 'int';
+    $description = 'Целое число.<br>Один из простейших и самых распространённых типов данных';
 } elseif (is_string($variable)) {
-    $type = string;
-    $description = "Строка.
-                    Тип данных, значениями которого является произвольная последовательность символов алфавита";
+    $type = 'string';
+    $description = 'Строка.<br>Тип данных, значениями которого является произвольная последовательность символов алфавита';
 } elseif (is_null($variable)) {
-    $type = "null";
-    $variable = "null";
-    $description = "Псевдозначение.
-                    Может быть записано в поле таблицы базы данных";
+    $type = 'null';
+    $variable = (unset)$variable;
+    $description = 'Псевдозначение.<br>Может быть записано в поле таблицы базы данных';
+} elseif(is_array($variable) or is_object($variable) or is_resource($variable)) {
+    $type = 'other';
+    $description = 'Другие типы данных.<br>Такие как массив, объект, ресурс';
 }
 ?>
 
@@ -33,7 +35,7 @@ if (is_bool($variable)) {
     <title>bPHP - 1.1.1</title>
 </head>
 <body>
-    <p><?php echo $variable."\n"."is"."\n".$type;?></p>
+    <p><?php echo "$variable is $type";?></p>
     <h3><?php echo $description?></h3>
 </body>
 </html>
