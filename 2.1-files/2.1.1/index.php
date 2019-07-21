@@ -1,32 +1,28 @@
 <?php
-$csv = array_map('str_getcsv', file('data.csv'));
-$arr = [];
+function сonversionCSVInJSON($fileName) {
+    if(($openFile = fopen('data.csv', 'r')) !== false) {
+        $data = fgetcsv($openFile);
+        $keys = explode(';', $data[0]);
 
-for ($a = 0; $a < count($csv) - 1; $a++) {
-    if ($a === 0) {
-        $name = substr($csv[$a][$a], 0, 4);
-        $art = substr($csv[$a][$a], 5, 3);
-        $price = substr($csv[$a][$a], 9, 5);
-        $b = 1;
-    }
-    if ($a < 9) {
-        $arr[$a] = [
-            "$name" => substr($csv[$b][0], 0, 9),
-            "$art" => substr($csv[$b][0], 10, 4),
-            "$price" => substr($csv[$b][0], 15, 5)
-        ];
+        $newData = [];
+        while ($data = fgetcsv($openFile)) {
+            $oneStrArr = explode(';', $data[0]);
+            $oneStrObj = [];
+            for ($itemKey = 0; $itemKey < count($keys); $itemKey++) {
+                $oneStrObj[$keys[$itemKey]] = $oneStrArr[$itemKey];
+            }
+            $newData[] = $oneStrObj;
+        }
+        fclose($openFile);
+
+        $jsonData = json_encode($newData, JSON_PRETTY_PRINT);
+
+        $file = 'data.json';
+        file_put_contents($file, $jsonData);
+        echo 'finished';
     } else {
-        $arr[$a] = [
-            "$name" => substr($csv[$b][0], 0, 10),
-            "$art" => substr($csv[$b][0], 11, 4),
-            "$price" => substr($csv[$b][0], 16, 5)
-        ];
+        echo "Error opening file $fileName";
     }
-    $b++;
 }
 
-$json = json_encode($arr);
-print_r($json);
-file_put_contents('data.json', $json);
-echo 'Файл data.csv успешно конвертирован в data.json';
-
+сonversionCSVInJSON('data.csv');
