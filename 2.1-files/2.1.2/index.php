@@ -38,6 +38,14 @@ function make_upload($file) {
     </form>
 
     <?php
+    $files = scandir('img');
+
+    foreach ($files as $file) {
+      if ($file !== '.' && $file !== '..') {
+          echo "<img class=\"image\" src=\"" . 'img' . '/' . $file . "\">";
+      }
+    }
+
     if(isset($_FILES['file'])) {
       $check = can_upload($_FILES['file']);
     
@@ -45,13 +53,11 @@ function make_upload($file) {
         make_upload($_FILES['file']);
         
         $files = scandir('img');
-        foreach ($files as $file) {
-            if ($file !== '.' && $file !== '..') {
-                echo "<img class=\"image\" src=\"" . img . '/' . $file . "\" >";
-            }
-        }
+        $count = count($files) - 1;
+        $file = $files[$count];
+        echo "<img class=\"image\" src=\"" . 'img' . '/' . $file . "\">";
       } else {
-        echo "<strong>Ошибка загрузки файла</strong>";  
+        echo "<div>Ошибка загрузки файла</div>";
       }
     }
     ?>
