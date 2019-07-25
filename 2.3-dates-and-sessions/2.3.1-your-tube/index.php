@@ -7,7 +7,7 @@
     function getViews()
     {
         $views = include 'views.php';
-        return (int) $views;
+        return $views;
     }
 
     /**
@@ -20,6 +20,7 @@
         $views++;
         $data = "<?php \r\nreturn {$views};";
         file_put_contents('views.php', $data);
+
     }
 
     /**
@@ -27,12 +28,21 @@
      *
      * @return bool
      */
-    function shouldBeIncremented(): bool
+    function shouldBeIncremented()
     {
-        //write your code here
+        session_set_cookie_params(1800);
+        session_start();
+        //Тольк опо истечении 5 минут условие следующего if будут выполняться
+        //И просмотр засчитается
+        if (time() >= $_SESSION['visitTime'] + 300) {
+            $_SESSION = [];
+        }
+        if (count($_SESSION) == 0) {
+            $_SESSION['visitTime'] = time();
+            incrementViews(getViews());
+        }
     }
-
-    //
+    shouldBeIncremented();
 ?>
 
 <!DOCTYPE html>
