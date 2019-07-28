@@ -39,9 +39,10 @@ function bruteForceProtection($users) {
         //создать время ввода и счетчик попыток ввода
         if (count($_SESSION) == 1) {
             $_SESSION['time'] = time(); //время
-            $_SESSION['counter'] = 0; //попытки
+            $_SESSION['counter'] = 1; //счетчик попыток который сразу регестрирует 1 неверный ввод пороля
             //если время между попытками меньше 5 секунд
         } elseif (time() < $_SESSION['time'] + 5) {
+            $_SESSION['counter']++;
             echo 'Слишком часто вводите пароль. Попробуйте еще раз через минуту';
             //Если в течении минуты ввели неправельно пароль + к счетчику попыток
         } elseif (time() < $_SESSION['time'] + 60) {
@@ -67,5 +68,7 @@ function bruteForceProtection($users) {
     }
 }
 
-bruteForceProtection($users);
+if (isset($_POST)) {
+    bruteForceProtection($users);
+}
 
