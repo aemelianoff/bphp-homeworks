@@ -54,16 +54,18 @@ function bruteForceProtection($users) {
         }
         
         //Если было 3 попытки за последную минуту
-        if ($_SESSION['counter'] == 3) {
-            $_SESSION['counter'] = 0;
-            echo 'Слишком часто вводите пароль. Попробуйте еще раз через минуту';
-
-            //Записать в файл имя, время и дату неправельного ввода
-            $file = 'bruteForce.txt';
-            $fpFile = fopen($file, "a");
-            $str = $_POST['login'] . ': ' . date("j F Y, g:i a");
-            fwrite($fpFile, $str);
-            fclose($fpFile);
+        if (isset($_SESSION['counter'])) {
+            if ($_SESSION['counter'] == 3) {
+                $_SESSION['counter'] = 0;
+                echo 'Слишком часто вводите пароль. Попробуйте еще раз через минуту';
+    
+                //Записать в файл имя, время и дату неправельного ввода
+                $file = 'bruteForce.txt';
+                $fpFile = fopen($file, "a");
+                $str = $_POST['login'] . ': ' . date("j F Y, g:i a");
+                fwrite($fpFile, $str);
+                fclose($fpFile);
+            }
         }
     }
 }
