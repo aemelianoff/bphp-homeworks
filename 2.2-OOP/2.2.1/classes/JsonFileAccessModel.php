@@ -4,43 +4,42 @@ class JsonFileAccessModel {
     protected $file;
 
     public function __construct($name) {
-        $this->$fileName = Config::DATABASE_PATH . $name . '.json';
+        $this->fileName = Config::DATABASE_PATH . $name;
     }
 
     private function connect() {
-        $this->$file = fopen($this->$fileName, 'r+') or die("не удалось открыть файл");
+        $this->file = fopen($this->fileName, 'r+') or die("не удалось открыть файл");
     }
 
     private function disconnect() {
-        fclose($this->$file);
+        fclose($this->file);
     }
 
     public function read() {
-        $file = fopen($this->$fileName, 'r+') or die("не удалось открыть файл");
-        $readFile = file_get_contents($file);
-        fclose($this->$file);
+        $this->connect();
+        $readFile = fread($this->file, filesize($this->fileName));
+        $this->disconnect();
         return $readFile;
     }
 
     public function write($textToWrite) {
-        $file = fopen($this->$fileName, 'w+') or die("не удалось открыть файл");
-        fwrite($file, $textToWrite);
-        fclose($this->$file);
+        $this->connect();
+        fwrite($this->file, $textToWrite);
+        $this->disconnect();
     }
 
     public function readJson() {
-        $file = fopen($this->$fileName, 'r+') or die("не удалось открыть файл");
-        $readFile = file_get_contents($file);
+        $this->connect();
+        $readFile = fread($this->file, filesize($this->$ileName));
         $jsonData = json_encode($readFile, JSON_PRETTY_PRINT);
-        $newJsonData = file_put_contents($file, $jsonData);
-        fclose($this->$file);
-        return $newJsonData;
+        $this->disconnect();
+        return $jsonData;
     }
 
     public function writeJson($textToWrite) {
-        $file = fopen($this->$fileName, 'w+') or die("не удалось открыть файл");
+        $this->connect();
         $jsonData = json_encode($textToWrite, JSON_PRETTY_PRINT);
-        fwrite($file, $jsonData);
-        fclose($this->$file);
+        fwrite($this->file, $jsonData);
+        $this->disconnect();
     }
 }
