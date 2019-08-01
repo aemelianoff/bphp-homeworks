@@ -32,14 +32,12 @@
     {
         session_set_cookie_params(1800);
         session_start();
-        //Тольк опо истечении 5 минут условие следующего if будут выполняться
-        //И просмотр засчитается
-        if (time() >= $_SESSION['visitTime'] + 300) {
-            $_SESSION = [];
-        }
+
         if (count($_SESSION) == 0) {
             $_SESSION['visitTime'] = time();
             incrementViews(getViews());
+        } elseif (time() >= $_SESSION['visitTime'] + 300) {
+            $_SESSION = [];
         }
     }
     shouldBeIncremented();
