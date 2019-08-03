@@ -19,58 +19,64 @@ function login($users) {
     return false;
 }
 
-//Фунуцмя защиты от перебора
+//Функция для проверки верный ли логин или пароль
+function check($users) {
+    $_SESSION['login'] = $_POST['login'];
+    $bool = login($users);
+    if ($bool == true) {
+        return;
+    } else {
+        $_SESSION['time'] = time();
+        $_SESSION['counter'] = 1;
+        return;
+    }
+}
+
+//Функция защиты от перебора
 function bruteForceProtection($users) {
     session_set_cookie_params(1800);
     session_start();
 
-    //Если сессия пустая, создать булевую проверку на авторизацию
+    //Если это первая попытка авторизации, то вызвать функцию проверки
     if (count($_SESSION) == 0) {
-        $_SESSION['login'] = true;
+        check($users);
+        return;
     }
 
-    //Вызвать функцию авторизации
-    if ($_SESSION['login'] == true) {
-        $_SESSION['login'] = login($users);
-    }
-
-    //Если пароль неправельный заустить защиту
-    if ($_SESSION['login'] == false) {
-        //создать время ввода и счетчик попыток ввода
-        if (count($_SESSION) == 1) {
-            $_SESSION['time'] = time(); //время
-            $_SESSION['counter'] = 1; //счетчик попыток который сразу регестрирует 1 неверный ввод пороля
-            //если время между попытками меньше 5 секунд
-        } elseif (time() < $_SESSION['time'] + 5) {
+    //Если это не первая попытка авторизации и логин используеться тот же
+    if ($_SESSION['login'] == $_POST['login']) {
+        //Если авторизацию производят через 5 секунд с неправельным паролем
+        if (time() < $_SESSION['time'] + 5) {
             $_SESSION['counter']++;
             echo 'Слишком часто вводите пароль. Попробуйте еще раз через минуту';
-            //Если в течении минуты ввели неправельно пароль + к счетчику попыток
+            //Если авторизация происходит в течении минуты с неправельным поролем
         } elseif (time() < $_SESSION['time'] + 60) {
             $_SESSION['counter']++;
-            //По истечению минуты снова разрешить ввод
+            echo 'Слишком часто вводите пароль. Попробуйте еще раз через минуту';
+            //Если прошло уже больше минуты то снова позволить пройти авторизацию
         } elseif (time() >= $_SESSION['time'] + 60) {
             $_SESSION = [];
-            $_SESSION['login'] = login($users);
+            check($users);
+            return;
         }
-        
-        //Если было 3 попытки за последную минуту
-        if (isset($_SESSION['counter'])) {
-            if ($_SESSION['counter'] == 3) {
-                $_SESSION['counter'] = 0;
-                echo 'Слишком часто вводите пароль. Попробуйте еще раз через минуту';
-    
-                //Записать в файл имя, время и дату неправельного ввода
-                $file = 'bruteForce.txt';
-                $fpFile = fopen($file, "a");
-                $str = $_POST['login'] . ': ' . date("j F Y, g:i a");
-                fwrite($fpFile, $str);
-                fclose($fpFile);
-            }
+
+        //Если пароль был введен не првельно 3 раза
+        if ($_SESSION['counter'] == 3) {
+            $_SESSION['counter'] = 0;
+                
+            //Записать в файл имя, время и дату неправельного ввода
+            $file = 'bruteForce.txt';
+            $fpFile = fopen($file, 'a');
+            $str = $_POST['login'] . ': ' . date('j F Y, g:i a') . "\n";
+            fwrite($fpFile, $str);
+            fclose($fpFile);
         }
+    //Если логин отличаеться от вводимого ранее
+    } else {
+        check($users);
+        return;
     }
 }
 
-if (isset($_POST)) {
-    bruteForceProtection($users);
-}
+bruteForceProtection($users);
 
