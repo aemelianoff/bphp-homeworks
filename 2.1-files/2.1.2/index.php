@@ -1,26 +1,19 @@
 <?php
-function can_upload($file) {
-    if ($file['name'] == '') {
-        return 'Вы не выбрали файл.';
-    }
-	if ($file['size'] == 0) {
-        return 'Файл слишком большой.';
-    }
-    
-    $types = array('jpg', 'png', 'gif', 'bmp', 'jpeg');
-    $getMime = explode('.', $file['name']);
-    $mime = strtolower(end($getMime));
-	
-	if(!in_array($mime, $types)) {
-        return 'Недопустимый тип файла.';
-    }
 
-    return true;
-}
-  
-function make_upload($file) {	
-    $name = mt_rand(0, 10000) . $file['name'];
-	copy($file['tmp_name'], 'img/' . $name);
+if (count($_FILES) > 0) {
+    $uploadsDir = 'img';
+    if ($_FILES["file"]["error"] == UPLOAD_ERR_OK) {
+        $tmpName = $_FILES['file']['tmp_name'];
+        if (is_uploaded_file($tmpName)) {
+            $pathParts = pathinfo($_FILES['file']['name']);
+            if ($pathParts['extension'] == 'jpg' || $pathParts['extension'] == 'jpeg' || $pathParts['extension'] == 'png' || $pathParts['extension'] == 'gif') {
+                move_uploaded_file($tmpName, $uploadsDir . '/' . $pathParts['basename']);
+                echo 'Файл успешно загружен';
+            } else {
+                echo 'Недопустимый формат файла. Можно загружать только изображения в формате jpg, jpeg, png или gif';
+            }
+        }
+    }
 }
 ?>
 
@@ -38,28 +31,18 @@ function make_upload($file) {
     </form>
 
     <?php
-    $files = scandir('img');
-
-    foreach ($files as $file) {
-      if ($file !== '.' && $file !== '..') {
-          echo "<img class=\"image\" src=\"" . 'img' . '/' . $file . "\">";
-      }
-    }
-
-    if(isset($_FILES['file'])) {
-      $check = can_upload($_FILES['file']);
-    
-      if($check === true) {
-        make_upload($_FILES['file']);
-        
-        $files = scandir('img');
-        $count = count($files) - 1;
-        $file = $files[$count];
-        echo "<img class=\"image\" src=\"" . 'img' . '/' . $file . "\">";
-      } else {
-        echo "<div>Ошибка загрузки файла</div>";
-      }
-    }
+        $images = scandir("./img");
+        foreach ($images as $key => $value) {
+            if ($value == "." || $value == "..") {
+                unset($images[$key]);
+            }
+        }
+        if (count($images) > 0) {
+            foreach ($images as $value) {
+                echo "<img src='./img/" . $value . "'> ";
+                
+            }
+        }
     ?>
   </body>
 </html>
