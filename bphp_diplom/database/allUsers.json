@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Менеджер",
+    "email": "manager@mail.ru",
+    "password": "12345",
+    "status": "admin"
+  },
+  {
+    "id": 2,
+    "name": "Переводчик 1",
+    "email": "translator1@mail.ru",
+    "password": "12345",
+    "status": "translator"
+  },
+  {
+    "id": 3,
+    "name": "Переводчик 2",
+    "email": "translator2@mail.ru",
+    "password": "12345",
+    "status": "translator"
+  },
+  {
+    "id": 4,
+    "name": "Переводчик 3",
+    "email": "translator3@mail.ru",
+    "password": "12345",
+    "status": "translator"
+  }
+]
